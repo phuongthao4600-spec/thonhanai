@@ -60,7 +60,6 @@
     .avatar::after  { right: 12px; transform: rotate(8deg); }
     .avatar span { font-size: 38px; }
 
-    /* avatar nói */
     .avatar.speaking {
       animation: talkBounce 0.6s infinite alternate;
       box-shadow: 0 0 0 4px #fff, 0 14px 24px rgba(255,79,139,0.45);
@@ -315,33 +314,37 @@
   const nameInput = document.getElementById("studentName");
   const classInput = document.getElementById("className");
   const thanksInput = document.getElementById("thanksInput");
-  const deedInput = document.getElementById("deedInput");
-  const loveInput = document.getElementById("loveInput");
+  const deedInput   = document.getElementById("deedInput");
+  const loveInput   = document.getElementById("loveInput");
   const sendBtn   = document.getElementById("sendBtn");
   const formBtn   = document.getElementById("formBtn");
   const bunnyAvatar = document.getElementById("bunnyAvatar");
   const currentSpeechText = document.getElementById("currentSpeechText");
 
-  // ⭐ Link Google Form của cô (đã chuẩn hoá, không dùng iframe)
+  // ⭐ Link Google Form của cô
   const GOOGLE_FORM_BASE =
     "https://docs.google.com/forms/d/e/1FAIpQLScFujTGwUCGm-ACOQrUbe4DgnfLXWYAK5C5H_TgwFzoW9rn8w/viewform";
 
-  /* ====== GIỌNG CÔ GIÁO ẤM ÁP (Web Speech API) ====== */
+  /* ====== GIỌNG CÔ GIÁO ẤM ÁP ====== */
   const synth = window.speechSynthesis;
   let teacherVoice = null;
 
   function pickWarmVietnameseVoice() {
     if (!synth) return null;
     const voices = synth.getVoices();
-    // ưu tiên tiếng Việt, tên có vẻ nữ
-    let viVoices = voices.filter(v => v.lang.toLowerCase().startsWith("vi"));
-    let femaleLike = viVoices.find(v =>
+    const viVoices = voices.filter(v => v.lang.toLowerCase().startsWith("vi"));
+    const femaleLike = viVoices.find(v =>
       /female|nữ|nu|woman|girl/i.test(v.name)
     );
     return femaleLike || viVoices[0] || voices[0] || null;
   }
 
   function speakAsTeacher(text) {
+    // luôn cập nhật câu nói + cho thỏ nhún dù máy không có voice
+    currentSpeechText.textContent = text;
+    bunnyAvatar.classList.add("speaking");
+    setTimeout(() => bunnyAvatar.classList.remove("speaking"), 2600);
+
     if (!synth || !text) return;
 
     if (!teacherVoice) {
@@ -355,15 +358,10 @@
 
     const utter = new SpeechSynthesisUtterance(text);
     if (teacherVoice) utter.voice = teacherVoice;
-    utter.rate = 0.95;  // chậm, ấm
-    utter.pitch = 0.95; // trầm vừa
+    utter.rate = 0.95;
+    utter.pitch = 0.95;
 
-    bunnyAvatar.classList.add("speaking");
-    currentSpeechText.textContent = text;
-
-    utter.onend = () => bunnyAvatar.classList.remove("speaking");
-    utter.onerror = () => bunnyAvatar.classList.remove("speaking");
-
+    utter.onerror = () => {};
     synth.cancel();
     synth.speak(utter);
   }
@@ -397,12 +395,10 @@
     parts.push(`Chào ${labelName}${labelClass}! Cô Thỏ đã đọc xong phiếu Nhân Ái của con rồi.`);
 
     if (hasThanks && hasDeed && hasLove) {
-      // Đủ 3 mục
       parts.push("Con đã hoàn thành đủ 3 phần: 3 lời cảm ơn, 1 việc tốt và 1 lời yêu thương. Điều đó cho thấy trái tim của con rất nhân ái và biết nghĩ cho người khác. 💛");
       parts.push("Cô rất tự hào về con. Tuần này con xứng đáng nhận một tấm <strong>Giấy khen Thỏ Nhân Ái</strong> vì đã thực hành lòng biết ơn, làm việc tốt và lan toả yêu thương.");
       parts.push("Con hãy tiếp tục giữ thói quen đẹp này trong những tuần tiếp theo nhé. Cô tin rằng con sẽ truyền cảm hứng cho nhiều bạn khác trong lớp. 🌟");
     } else {
-      // Thiếu mục nào đó -> động viên cụ thể
       if (!hasThanks && !hasDeed && !hasLove) {
         parts.push("Tuần này con chưa ghi rõ lời cảm ơn, việc tốt và lời yêu thương. Không sao đâu, ai cũng có những tuần khởi động mà. 🌱");
       } else {
@@ -449,7 +445,6 @@
 
     if (!thanks && !deed && !love) return;
 
-    // hiển thị tóm tắt phiếu của học sinh bên phía "con"
     const summary =
       "3 lời cảm ơn:\n" + (thanks || "(chưa viết)") +
       "\n\n1 việc tốt:\n" + (deed || "(chưa viết)") +
@@ -458,7 +453,6 @@
 
     makeBotReply(rawName, className, thanks, deed, love);
 
-    // hiện nút mở Form để nộp bài (HS vẫn phải bấm Gửi trong Form)
     formBtn.style.display = "inline-flex";
     formBtn.href = GOOGLE_FORM_BASE;
   }
