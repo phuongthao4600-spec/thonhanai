@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Thỏ Nhân Ái – Nhật ký Nhân ái 3-1-1</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #ffe9f0, #e3f6ff);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .app {
+      background: #ffffffdd;
+      backdrop-filter: blur(10px);
+      max-width: 520px;
+      width: 100%;
+      border-radius: 24px;
+      box-shadow: 0 18px 35px rgba(0,0,0,0.15);
+      padding: 20px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .avatar {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #ffd1e3);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      box-shadow: 0 0 0 3px #fff, 0 10px 18px rgba(0,0,0,0.1);
+    }
+    .avatar::before, .avatar::after {
+      content: "";
+      position: absolute;
+      width: 18px; height: 34px;
+      background: #ffe6f2;
+      border-radius: 50px;
+      top: -24px;
+      box-shadow: inset 0 0 0 2px #ffc1de;
+    }
+    .avatar::before { left: 6px; transform: rotate(-8deg); }
+    .avatar::after  { right: 6px; transform: rotate(8deg); }
+    .avatar span { font-size: 30px; }
+
+    .title-box { flex: 1; }
+    .title { font-size: 19px; font-weight: 700; color: #ff4f8b; }
+    .subtitle { font-size: 13px; color: #555; margin-top: 2px; }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #fff4f9;
+      color: #ff4f8b;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    .field {
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .field label {
+      font-weight: 600;
+      color: #444;
+    }
+    .field small {
+      color: #777;
+      font-size: 11px;
+    }
+    .field input {
+      border-radius: 14px;
+      border: 1px solid #e0e6ff;
+      padding: 6px 10px;
+      font-size: 13px;
+      outline: none;
+      background: #f7fbff;
+    }
+
+    .chat {
+      background: #fbfbff;
+      border-radius: 18px;
+      padding: 10px;
+      border: 1px solid #edf1ff;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+      font-size: 13px;
+    }
+    .msg { display: flex; }
+    .msg.me { justify-content: flex-end; }
+    .bubble {
+      max-width: 82%;
+      padding: 8px 10px;
+      border-radius: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+      white-space: pre-line;
+    }
+    .msg.me .bubble {
+      background: #ffebf5;
+      color: #333;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.bot .bubble {
+      background: #eef5ff;
+      color: #222;
+      border-bottom-left-radius: 4px;
+    }
+    .msg.bot .bubble strong { color: #ff4f8b; }
+
+    .hint {
+      font-size: 11px;
+      color: #777;
+    }
+    textarea {
+      width: 100%;
+      resize: none;
+      border-radius: 14px;
+      border: 1px solid #e0e6ff;
+      padding: 8px 10px;
+      min-height: 70px;
+      font-size: 13px;
+      outline: none;
+    }
+    .buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    button, a.btn {
+      border: none;
+      border-radius: 14px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ff7bb5, #ff4f8b);
+      color: #fff;
+      box-shadow: 0 8px 14px rgba(255,79,139,0.4);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+    }
+    button.secondary, a.btn.secondary {
+      background: #e7efff;
+      color: #345;
+      box-shadow: none;
+      border: 1px solid #c9d7ff;
+    }
+    button:active, a.btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 10px rgba(255,79,139,0.35);
+    }
+    .form-note {
+      font-size: 11px;
+      color: #666;
+    }
+
+    @media (max-width: 520px) {
+      .app { padding: 16px 14px; }
+      .title { font-size: 18px; }
+      .avatar { width: 54px; height: 54px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="avatar"><span>🐰</span></div>
+    <div class="title-box">
+      <div class="title">Thỏ Nhân Ái</div>
+      <div class="subtitle">Lắng nghe phiếu 3–1–1 và gửi lời khen cho con 💛</div>
+      <div class="tag">Nhật ký Nhân ái – 3 lời cảm ơn, 1 việc tốt, 1 lời yêu thương</div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="studentName">Tên học sinh</label>
+    <input id="studentName" placeholder="Ví dụ: Nguyễn Gia Hân..." />
+  </div>
+
+  <div class="field">
+    <label for="userInput">Nội dung phiếu nhân ái tuần này</label>
+    <small>Con có thể gõ lại 3 lời cảm ơn, 1 việc tốt, 1 lời yêu thương (hoặc tóm tắt điều tốt con đã làm).</small>
+    <textarea id="userInput" placeholder="Ví dụ: Con cảm ơn mẹ vì..., con đã giúp bạn..., con muốn gửi lời yêu thương đến..."></textarea>
+  </div>
+
+  <div class="chat" id="chatBox">
+    <div class="msg bot">
+      <div class="bubble">
+        <strong>Thỏ Nhân Ái:</strong><br>
+        Chào con! Sau khi con viết xong nội dung phiếu, bấm “Gửi cho Thỏ”. Thỏ sẽ đọc
+        và gửi lời khen hoặc lời động viên cho con nhé. 🌟
+      </div>
+    </div>
+  </div>
+
+  <div class="hint">
+    Gợi ý từ khóa: cảm ơn, xin lỗi, giúp đỡ, chia sẻ, thương, yêu, an ủi, lắng nghe...
+  </div>
+
+  <div class="buttons">
+    <button id="sendBtn">Gửi cho Thỏ</button>
+    <a id="formBtn" class="btn secondary" href="#" target="_blank" style="display:none;">
+      Gửi phiếu cho cô (Google Form)
+    </a>
+  </div>
+  <div class="form-note">
+    Sau khi Thỏ phản hồi, con bấm “Gửi phiếu cho cô” để mở Google Form và nộp bài.  
+    Cô sẽ dùng Form này để tổng kết theo tháng, học kì.
+  </div>
+</div>
+
+<script>
+  const chatBox   = document.getElementById("chatBox");
+  const nameInput = document.getElementById("studentName");
+  const textInput = document.getElementById("userInput");
+  const sendBtn   = document.getElementById("sendBtn");
+  const formBtn   = document.getElementById("formBtn");
+
+  // ⭐ CÔ DÁN LINK GOOGLE FORM CỦA CÔ VÀO ĐÂY ⭐
+  const GOOGLE_FORM_BASE = "https://forms.gle/THAY_LINK_FORM_CUA_CO";
+
+  function scrollToBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  function addMessage(html, from = "bot") {
+    const msg = document.createElement("div");
+    msg.className = "msg " + (from === "me" ? "me" : "bot");
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.innerHTML = html;
+    msg.appendChild(bubble);
+    chatBox.appendChild(msg);
+    scrollToBottom();
+  }
+
+  function makeBotReply(name, content) {
+    const t = content.toLowerCase();
+
+    const hasThank  = t.includes("cảm ơn") || t.includes("cam on");
+    const hasLove   = t.includes("thương") || t.includes("thuong") || t.includes("yêu") || t.includes("yeu");
+    const hasHelp   = t.includes("giúp") || t.includes("giup") ||
+                      t.includes("chia sẻ") || t.includes("chia se") ||
+                      t.includes("nhặt") || t.includes("nhat");
+    const hasSorry  = t.includes("xin lỗi") || t.includes("xin loi");
+
+    let lines = [];
+    lines.push(`Chào ${name}! 🐰 Thỏ đã đọc hết phiếu nhân ái của con rồi.`);
+
+    if (hasHelp) {
+      lines.push("Con đã có những hành động giúp đỡ, chia sẻ rất dễ thương. Điều đó làm thế giới quanh con trở nên ấm áp hơn nhiều. 🌈");
+    }
+    if (hasThank) {
+      lines.push("Thỏ rất thích cách con biết nói lời cảm ơn. Một câu cảm ơn nhỏ nhưng mang theo rất nhiều yêu thương và tôn trọng. 💛");
+    }
+    if (hasSorry) {
+      lines.push("Việc con dám nói lời xin lỗi cho thấy con là người dũng cảm và biết chịu trách nhiệm với việc mình làm. 💖");
+    }
+    if (hasLove) {
+      lines.push("Thỏ cảm nhận được rất nhiều tình yêu thương trong những dòng con viết. Người nhận chắc chắn sẽ rất hạnh phúc. 🥰");
+    }
+
+    if (!hasThank || !hasLove) {
+      let suggest = "Tuần sau, con thử ";
+      if (!hasThank && !hasLove) {
+        suggest += "vừa làm một việc tốt, vừa nói lời cảm ơn hoặc lời yêu thương với ai đó nhé. Thỏ tin con làm được! ✨";
+      } else if (!hasThank) {
+        suggest += "tìm một người mà con muốn gửi lời cảm ơn và nói với người đó nhé. Điều đó sẽ làm trái tim cả hai cùng vui. 🌟";
+      } else if (!hasLove) {
+        suggest += "gửi thêm một lời yêu thương (với ba mẹ, ông bà, bạn bè hoặc thầy cô) nhé. Yêu thương nói ra sẽ lan tỏa rất xa đấy! 🌷";
+      }
+      lines.push(suggest);
+    } else {
+      lines.push("Tuần này con đã vừa làm việc tốt, vừa có lời cảm ơn và yêu thương. Thỏ tặng con một bông hoa Nhân Ái thật to! 🌸 Tiếp tục phát huy nhé!");
+    }
+
+    const replyHtml = "<strong>Thỏ Nhân Ái:</strong><br>" + lines.join(" ");
+    setTimeout(() => addMessage(replyHtml, "bot"), 500);
+  }
+
+  function handleSend() {
+    const name = (nameInput.value || "").trim() || "con";
+    const content = (textInput.value || "").trim();
+    if (!content) return;
+
+    addMessage(content, "me");
+    makeBotReply(name, content);
+
+    if (GOOGLE_FORM_BASE && GOOGLE_FORM_BASE.startsWith("http")) {
+      formBtn.style.display = "inline-flex";
+      formBtn.onclick = function () {
+        window.open(GOOGLE_FORM_BASE, "_blank");
+      };
+    }
+
+    textInput.value = "";
+  }
+
+  sendBtn.addEventListener("click", handleSend);
+  textInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  });
+</script>
+</body>
+</html>
+const GOOGLE_FORM_BASE = "https://docs.google.com/forms/d/e/1FAIpQLScFujTGwUCGm-ACOQrUbe4DgnfLXWYAK5C5H_TgwFzoW9rn8w/viewform?usp=header";
