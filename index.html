@@ -18,40 +18,63 @@
     .app {
       background: #ffffffdd;
       backdrop-filter: blur(10px);
-      max-width: 520px;
+      max-width: 560px;
       width: 100%;
       border-radius: 24px;
       box-shadow: 0 18px 35px rgba(0,0,0,0.15);
       padding: 20px 18px 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
     .header {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
+    }
+    .avatar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
     }
     .avatar {
-      width: 60px; height: 60px;
+      width: 72px; height: 72px;
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #fff, #ffd1e3);
       display: flex; align-items: center; justify-content: center;
       position: relative;
       box-shadow: 0 0 0 3px #fff, 0 10px 18px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     .avatar::before, .avatar::after {
       content: "";
       position: absolute;
-      width: 18px; height: 34px;
+      width: 18px; height: 36px;
       background: #ffe6f2;
       border-radius: 50px;
-      top: -24px;
+      top: -28px;
       box-shadow: inset 0 0 0 2px #ffc1de;
     }
-    .avatar::before { left: 6px; transform: rotate(-8deg); }
-    .avatar::after  { right: 6px; transform: rotate(8deg); }
-    .avatar span { font-size: 30px; }
+    .avatar::before { left: 10px; transform: rotate(-8deg); }
+    .avatar::after  { right: 10px; transform: rotate(8deg); }
+    .avatar span { font-size: 34px; }
+
+    .avatar.speaking {
+      animation: talkBounce 0.6s infinite alternate;
+      box-shadow: 0 0 0 4px #fff, 0 14px 24px rgba(255,79,139,0.45);
+    }
+    @keyframes talkBounce {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-4px) scale(1.03); }
+    }
+    .avatar-label {
+      font-size: 11px;
+      color: #ff4f8b;
+      background: #fff0f6;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
 
     .title-box { flex: 1; }
     .title { font-size: 19px; font-weight: 700; color: #ff4f8b; }
@@ -82,13 +105,29 @@
       color: #777;
       font-size: 11px;
     }
-    .field input {
+    .field input,
+    .field select {
       border-radius: 14px;
       border: 1px solid #e0e6ff;
       padding: 6px 10px;
       font-size: 13px;
       outline: none;
       background: #f7fbff;
+    }
+
+    .character-speech {
+      background: #fff7fb;
+      border-radius: 16px;
+      padding: 8px 10px;
+      border: 1px dashed #ffc6e0;
+      font-size: 12px;
+      color: #444;
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .character-speech span {
+      font-size: 16px;
     }
 
     .chat {
@@ -139,6 +178,7 @@
       font-size: 13px;
       outline: none;
     }
+
     .buttons {
       display: flex;
       gap: 8px;
@@ -174,79 +214,144 @@
       font-size: 11px;
       color: #666;
     }
-
-    @media (max-width: 520px) {
-      .app { padding: 16px 14px; }
-      .title { font-size: 18px; }
-      .avatar { width: 54px; height: 54px; }
-    }
   </style>
 </head>
 <body>
 <div class="app">
+
+  <!-- HEADER -->
   <div class="header">
-    <div class="avatar"><span>🐰</span></div>
+    <div class="avatar-wrap">
+      <div class="avatar" id="bunnyAvatar"><span>🐰</span></div>
+      <div class="avatar-label">Thỏ Nhân Ái</div>
+    </div>
     <div class="title-box">
       <div class="title">Thỏ Nhân Ái</div>
       <div class="subtitle">Lắng nghe phiếu 3–1–1 và gửi lời khen cho con 💛</div>
-      <div class="tag">Nhật ký Nhân ái – 3 lời cảm ơn, 1 việc tốt, 1 lời yêu thương</div>
+      <div class="tag">3 lời cảm ơn – 1 việc tốt – 1 lời yêu thương</div>
     </div>
   </div>
 
+  <!-- NHÂN VẬT NÓI -->
+  <div class="character-speech" id="characterSpeech">
+    <span>💬</span>
+    <div id="currentSpeechText">
+      Thỏ đang ở đây để lắng nghe câu chuyện Nhân Ái của con. Con viết xong phiếu rồi bấm “Gửi cho Thỏ” nha 🐰💗
+    </div>
+  </div>
+
+  <!-- INPUT TÊN -->
   <div class="field">
     <label for="studentName">Tên học sinh</label>
-    <input id="studentName" placeholder="Ví dụ: Nguyễn Gia Hân..." />
+    <input id="studentName" placeholder="Ví dụ: Trần Nguyên Khôi..." />
   </div>
 
+  <!-- INPUT LỚP -->
+  <div class="field">
+    <label for="className">Lớp</label>
+    <small>Con chọn đúng lớp của mình nhé.</small>
+    <select id="className">
+      <option value="">-- Chọn lớp --</option>
+      <option value="5/1">5/1</option>
+      <option value="5/2">5/2</option>
+      <option value="5/3">5/3</option>
+      <option value="5/4">5/4</option>
+      <option value="5/5">5/5</option>
+    </select>
+  </div>
+
+  <!-- INPUT NỘI DUNG -->
   <div class="field">
     <label for="userInput">Nội dung phiếu nhân ái tuần này</label>
-    <small>Con có thể gõ lại 3 lời cảm ơn, 1 việc tốt, 1 lời yêu thương (hoặc tóm tắt điều tốt con đã làm).</small>
-    <textarea id="userInput" placeholder="Ví dụ: Con cảm ơn mẹ vì..., con đã giúp bạn..., con muốn gửi lời yêu thương đến..."></textarea>
+    <small>Con có thể viết 3 lời cảm ơn – 1 việc tốt – 1 lời yêu thương hoặc tóm tắt điều tốt.</small>
+    <textarea id="userInput" placeholder="Ví dụ: Con cảm ơn..., Con đã giúp..., Con muốn gửi lời yêu thương tới..."></textarea>
   </div>
 
+  <!-- KHUNG CHAT -->
   <div class="chat" id="chatBox">
     <div class="msg bot">
       <div class="bubble">
         <strong>Thỏ Nhân Ái:</strong><br>
-        Chào con! Sau khi con viết xong nội dung phiếu, bấm “Gửi cho Thỏ”. Thỏ sẽ đọc
-        và gửi lời khen hoặc lời động viên cho con nhé. 🌟
+        Chào con! Sau khi con viết xong, bấm “Gửi cho Thỏ”, thỏ sẽ đọc và gửi lại cho con lời khen hoặc động viên. 🌟
       </div>
     </div>
   </div>
 
   <div class="hint">
-    Gợi ý từ khóa: cảm ơn, xin lỗi, giúp đỡ, chia sẻ, thương, yêu, an ủi, lắng nghe...
+    Gợi ý: cảm ơn, giúp đỡ, xin lỗi, thương, yêu, chia sẻ, an ủi...
   </div>
 
+  <!-- NÚT -->
   <div class="buttons">
     <button id="sendBtn">Gửi cho Thỏ</button>
     <a id="formBtn" class="btn secondary" href="#" target="_blank" style="display:none;">
       Gửi phiếu cho cô (Google Form)
     </a>
   </div>
+
   <div class="form-note">
-    Sau khi Thỏ phản hồi, con bấm “Gửi phiếu cho cô” để mở Google Form và nộp bài.  
-    Cô sẽ dùng Form này để tổng kết theo tháng, học kì.
+    Bấm “Gửi phiếu cho cô” sau khi Thỏ phản hồi để nộp bài.
   </div>
+
 </div>
 
 <script>
   const chatBox   = document.getElementById("chatBox");
   const nameInput = document.getElementById("studentName");
+  const classInput = document.getElementById("className");
   const textInput = document.getElementById("userInput");
   const sendBtn   = document.getElementById("sendBtn");
   const formBtn   = document.getElementById("formBtn");
+  const bunnyAvatar = document.getElementById("bunnyAvatar");
+  const currentSpeechText = document.getElementById("currentSpeechText");
 
-  // ⭐ CÔ DÁN LINK GOOGLE FORM CỦA CÔ VÀO ĐÂY ⭐
-  const GOOGLE_FORM_BASE = "https://forms.gle/THAY_LINK_FORM_CUA_CO";
+  /* ⭐ LINK GOOGLE FORM CỦA CÔ HERE ⭐ */
+  const GOOGLE_FORM_BASE = "https://docs.google.com/forms/d/e/1FAIpQLScFujTGwUCGm-ACOQrUbe4DgnfLXWYAK5C5H_TgwFzoW9rn8w/viewform";
 
-  function scrollToBottom() {
-    chatBox.scrollTop = chatBox.scrollHeight;
+  /* ======= GIỌNG NÓI THỎ ======= */
+  const synth = window.speechSynthesis;
+  let bunnyVoice = null;
+
+  function pickVietnameseVoice() {
+    if (!synth) return null;
+    const voices = synth.getVoices();
+    return (
+      voices.find(v => v.lang.toLowerCase().startsWith("vi")) ||
+      voices[0] ||
+      null
+    );
   }
 
-  function addMessage(html, from = "bot") {
+  function speakAsBunny(text) {
+    if (!synth || !text) return;
+
+    if (!bunnyVoice) {
+      bunnyVoice = pickVietnameseVoice();
+      if (!bunnyVoice) synth.onvoiceschanged = () => {
+        bunnyVoice = pickVietnameseVoice();
+      };
+    }
+
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.voice = bunnyVoice;
+    utter.rate = 1.05;
+    utter.pitch = 1.1;
+
+    bunnyAvatar.classList.add("speaking");
+    currentSpeechText.textContent = text;
+
+    utter.onend = () => bunnyAvatar.classList.remove("speaking");
+
+    synth.cancel();
+    synth.speak(utter);
+  }
+
+  /* ======= HIỂN THỊ TIN NHẮN ======= */
+  function scrollToBottom(){ chatBox.scrollTop = chatBox.scrollHeight; }
+
+  function addMessage(html, who="bot"){
     const msg = document.createElement("div");
-    msg.className = "msg " + (from === "me" ? "me" : "bot");
+    msg.className = "msg "+(who==="me" ? "me":"bot");
     const bubble = document.createElement("div");
     bubble.className = "bubble";
     bubble.innerHTML = html;
@@ -255,71 +360,76 @@
     scrollToBottom();
   }
 
-  function makeBotReply(name, content) {
+  /* ======= THỎ PHẢN HỒI ======= */
+  function makeBotReply(name, content){
     const t = content.toLowerCase();
 
-    const hasThank  = t.includes("cảm ơn") || t.includes("cam on");
-    const hasLove   = t.includes("thương") || t.includes("thuong") || t.includes("yêu") || t.includes("yeu");
-    const hasHelp   = t.includes("giúp") || t.includes("giup") ||
-                      t.includes("chia sẻ") || t.includes("chia se") ||
-                      t.includes("nhặt") || t.includes("nhat");
-    const hasSorry  = t.includes("xin lỗi") || t.includes("xin loi");
+    const hasThank = t.includes("cảm ơn") || t.includes("cam on");
+    const hasLove  = t.includes("thương") || t.includes("thuong") || t.includes("yêu") || t.includes("yeu");
+    const hasHelp  = t.includes("giúp") || t.includes("giup") ||
+                     t.includes("chia sẻ") || t.includes("chia se") ||
+                     t.includes("nhặt") || t.includes("nhat");
+    const hasSorry = t.includes("xin lỗi") || t.includes("xin loi");
 
-    let lines = [];
-    lines.push(`Chào ${name}! 🐰 Thỏ đã đọc hết phiếu nhân ái của con rồi.`);
+    const parts = [];
+
+    parts.push(`Chào ${name}! 🐰 Thỏ đã đọc xong phiếu Nhân Ái của con.`);
 
     if (hasHelp) {
-      lines.push("Con đã có những hành động giúp đỡ, chia sẻ rất dễ thương. Điều đó làm thế giới quanh con trở nên ấm áp hơn nhiều. 🌈");
+      parts.push("Con đã có hành động giúp đỡ hoặc chia sẻ với người khác. Những việc làm như vậy khiến lớp mình ấm áp hơn nhiều. 🌈");
     }
     if (hasThank) {
-      lines.push("Thỏ rất thích cách con biết nói lời cảm ơn. Một câu cảm ơn nhỏ nhưng mang theo rất nhiều yêu thương và tôn trọng. 💛");
-    }
-    if (hasSorry) {
-      lines.push("Việc con dám nói lời xin lỗi cho thấy con là người dũng cảm và biết chịu trách nhiệm với việc mình làm. 💖");
+      parts.push("Thỏ thích cách con biết nói lời cảm ơn. Một câu cảm ơn nhỏ mà mang theo rất nhiều yêu thương. 💐");
     }
     if (hasLove) {
-      lines.push("Thỏ cảm nhận được rất nhiều tình yêu thương trong những dòng con viết. Người nhận chắc chắn sẽ rất hạnh phúc. 🥰");
+      parts.push("Trong lời con viết, thỏ cảm nhận được nhiều yêu thương và sự quan tâm. Điều đó thật tuyệt vời. 💛");
+    }
+    if (hasSorry) {
+      parts.push("Con biết nhận lỗi và nói lời xin lỗi. Điều đó cho thấy con rất dũng cảm và biết trách nhiệm. 💖");
     }
 
-    if (!hasThank || !hasLove) {
-      let suggest = "Tuần sau, con thử ";
-      if (!hasThank && !hasLove) {
-        suggest += "vừa làm một việc tốt, vừa nói lời cảm ơn hoặc lời yêu thương với ai đó nhé. Thỏ tin con làm được! ✨";
-      } else if (!hasThank) {
-        suggest += "tìm một người mà con muốn gửi lời cảm ơn và nói với người đó nhé. Điều đó sẽ làm trái tim cả hai cùng vui. 🌟";
-      } else if (!hasLove) {
-        suggest += "gửi thêm một lời yêu thương (với ba mẹ, ông bà, bạn bè hoặc thầy cô) nhé. Yêu thương nói ra sẽ lan tỏa rất xa đấy! 🌷";
-      }
-      lines.push(suggest);
+    if (!hasHelp && !hasThank && !hasLove && !hasSorry) {
+      parts.push("Tuần này con chưa ghi rõ việc tốt, lời cảm ơn hay lời yêu thương. Tuần sau con thử để ý một việc nhỏ con làm được rồi ghi lại thật cụ thể nhé. 🌱");
     } else {
-      lines.push("Tuần này con đã vừa làm việc tốt, vừa có lời cảm ơn và yêu thương. Thỏ tặng con một bông hoa Nhân Ái thật to! 🌸 Tiếp tục phát huy nhé!");
+      if (!hasHelp) {
+        parts.push("Tuần tới, con thử tìm một việc tốt thật cụ thể để giúp người khác nhé. 🤝");
+      }
+      if (!hasThank) {
+        parts.push("Con cũng thử chọn một người để nói lời cảm ơn thật lòng nha. 🌟");
+      }
+      if (!hasLove) {
+        parts.push("Nếu được, con gửi thêm một lời yêu thương đến ba mẹ, ông bà, thầy cô hoặc bạn bè. 🌷");
+      }
     }
 
-    const replyHtml = "<strong>Thỏ Nhân Ái:</strong><br>" + lines.join(" ");
-    setTimeout(() => addMessage(replyHtml, "bot"), 500);
+    parts.push("Thỏ luôn sẵn sàng lắng nghe câu chuyện Nhân Ái của con vào tuần sau. 🐰✨");
+
+    const reply = parts.join(" ");
+    addMessage("<strong>Thỏ Nhân Ái:</strong><br>" + reply, "bot");
+    speakAsBunny(reply);
   }
 
-  function handleSend() {
-    const name = (nameInput.value || "").trim() || "con";
-    const content = (textInput.value || "").trim();
+  /* ======= XỬ LÝ GỬI ======= */
+  function handleSend(){
+    const rawName = nameInput.value.trim();
+    const className = classInput.value.trim();
+    const nameToShow = (rawName || "con") + (className ? ` lớp ${className}` : "");
+    const content = textInput.value.trim();
+
     if (!content) return;
 
     addMessage(content, "me");
-    makeBotReply(name, content);
+    makeBotReply(nameToShow, content);
 
-    if (GOOGLE_FORM_BASE && GOOGLE_FORM_BASE.startsWith("http")) {
-      formBtn.style.display = "inline-flex";
-      formBtn.onclick = function () {
-        window.open(GOOGLE_FORM_BASE, "_blank");
-      };
-    }
+    formBtn.style.display = "inline-flex";
+    formBtn.href = GOOGLE_FORM_BASE;
 
     textInput.value = "";
   }
 
   sendBtn.addEventListener("click", handleSend);
-  textInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+  textInput.addEventListener("keydown", (e)=>{
+    if(e.key==="Enter" && !e.shiftKey){
       e.preventDefault();
       handleSend();
     }
@@ -327,4 +437,3 @@
 </script>
 </body>
 </html>
-const GOOGLE_FORM_BASE = "https://docs.google.com/forms/d/e/1FAIpQLScFujTGwUCGm-ACOQrUbe4DgnfLXWYAK5C5H_TgwFzoW9rn8w/viewform?usp=header";
