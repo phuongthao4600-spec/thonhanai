@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Thỏ Nhân Ái – Nhật ký Nhân ái 3-1-1</title>
+  <title>Thỏ Nhân Ái – Nhật ký 3-1-1</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -18,11 +18,11 @@
     .app {
       background: #ffffffdd;
       backdrop-filter: blur(10px);
-      max-width: 560px;
+      max-width: 600px;
       width: 100%;
       border-radius: 24px;
       box-shadow: 0 18px 35px rgba(0,0,0,0.15);
-      padding: 20px 18px 16px;
+      padding: 20px 18px 18px;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -39,7 +39,7 @@
       gap: 4px;
     }
     .avatar {
-      width: 72px; height: 72px;
+      width: 82px; height: 82px;
       border-radius: 50%;
       background: radial-gradient(circle at 30% 30%, #fff, #ffd1e3);
       display: flex; align-items: center; justify-content: center;
@@ -50,16 +50,17 @@
     .avatar::before, .avatar::after {
       content: "";
       position: absolute;
-      width: 18px; height: 36px;
+      width: 20px; height: 40px;
       background: #ffe6f2;
       border-radius: 50px;
-      top: -28px;
+      top: -32px;
       box-shadow: inset 0 0 0 2px #ffc1de;
     }
-    .avatar::before { left: 10px; transform: rotate(-8deg); }
-    .avatar::after  { right: 10px; transform: rotate(8deg); }
-    .avatar span { font-size: 34px; }
+    .avatar::before { left: 12px; transform: rotate(-8deg); }
+    .avatar::after  { right: 12px; transform: rotate(8deg); }
+    .avatar span { font-size: 38px; }
 
+    /* avatar nói */
     .avatar.speaking {
       animation: talkBounce 0.6s infinite alternate;
       box-shadow: 0 0 0 4px #fff, 0 14px 24px rgba(255,79,139,0.45);
@@ -77,7 +78,7 @@
     }
 
     .title-box { flex: 1; }
-    .title { font-size: 19px; font-weight: 700; color: #ff4f8b; }
+    .title { font-size: 20px; font-weight: 700; color: #ff4f8b; }
     .subtitle { font-size: 13px; color: #555; margin-top: 2px; }
     .tag {
       display: inline-flex;
@@ -89,6 +90,21 @@
       color: #ff4f8b;
       font-size: 11px;
       margin-top: 4px;
+    }
+
+    .character-speech {
+      background: #fff7fb;
+      border-radius: 16px;
+      padding: 8px 10px;
+      border: 1px dashed #ffc6e0;
+      font-size: 12px;
+      color: #444;
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+    .character-speech span {
+      font-size: 16px;
     }
 
     .field {
@@ -106,28 +122,18 @@
       font-size: 11px;
     }
     .field input,
-    .field select {
+    .field select,
+    .field textarea {
       border-radius: 14px;
       border: 1px solid #e0e6ff;
       padding: 6px 10px;
       font-size: 13px;
       outline: none;
       background: #f7fbff;
+      resize: none;
     }
-
-    .character-speech {
-      background: #fff7fb;
-      border-radius: 16px;
-      padding: 8px 10px;
-      border: 1px dashed #ffc6e0;
-      font-size: 12px;
-      color: #444;
-      display: flex;
-      gap: 6px;
-      align-items: flex-start;
-    }
-    .character-speech span {
-      font-size: 16px;
+    .field textarea {
+      min-height: 52px;
     }
 
     .chat {
@@ -168,21 +174,12 @@
       font-size: 11px;
       color: #777;
     }
-    textarea {
-      width: 100%;
-      resize: none;
-      border-radius: 14px;
-      border: 1px solid #e0e6ff;
-      padding: 8px 10px;
-      min-height: 70px;
-      font-size: 13px;
-      outline: none;
-    }
 
     .buttons {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
+      margin-top: 2px;
     }
     button, a.btn {
       border: none;
@@ -214,39 +211,40 @@
       font-size: 11px;
       color: #666;
     }
+
+    @media (max-width: 600px) {
+      .app { padding: 16px 14px; }
+      .title { font-size: 18px; }
+      .avatar { width: 72px; height: 72px; }
+    }
   </style>
 </head>
 <body>
 <div class="app">
-
-  <!-- HEADER -->
   <div class="header">
     <div class="avatar-wrap">
       <div class="avatar" id="bunnyAvatar"><span>🐰</span></div>
-      <div class="avatar-label">Thỏ Nhân Ái</div>
+      <div class="avatar-label">Cô Thỏ Nhân Ái</div>
     </div>
     <div class="title-box">
       <div class="title">Thỏ Nhân Ái</div>
-      <div class="subtitle">Lắng nghe phiếu 3–1–1 và gửi lời khen cho con 💛</div>
+      <div class="subtitle">Cô lắng nghe phiếu 3–1–1 và gửi lời khen cho con 💛</div>
       <div class="tag">3 lời cảm ơn – 1 việc tốt – 1 lời yêu thương</div>
     </div>
   </div>
 
-  <!-- NHÂN VẬT NÓI -->
-  <div class="character-speech" id="characterSpeech">
+  <div class="character-speech">
     <span>💬</span>
     <div id="currentSpeechText">
-      Thỏ đang ở đây để lắng nghe câu chuyện Nhân Ái của con. Con viết xong phiếu rồi bấm “Gửi cho Thỏ” nha 🐰💗
+      Hôm nay cô Thỏ sẽ giúp con xem con đã đủ 3 lời cảm ơn, 1 việc tốt và 1 lời yêu thương chưa nhé. Con viết xong rồi bấm “Gửi cho Thỏ”! 🐰
     </div>
   </div>
 
-  <!-- INPUT TÊN -->
   <div class="field">
     <label for="studentName">Tên học sinh</label>
-    <input id="studentName" placeholder="Ví dụ: Trần Nguyên Khôi..." />
+    <input id="studentName" placeholder="Ví dụ: Nguyễn Gia Hân..." />
   </div>
 
-  <!-- INPUT LỚP -->
   <div class="field">
     <label for="className">Lớp</label>
     <small>Con chọn đúng lớp của mình nhé.</small>
@@ -257,101 +255,127 @@
       <option value="5/3">5/3</option>
       <option value="5/4">5/4</option>
       <option value="5/5">5/5</option>
+      <option value="5/6">5/6</option>
+      <option value="5/7">5/7</option>
+      <option value="5/8">5/8</option>
+      <option value="5/9">5/9</option>
+      <option value="5/10">5/10</option>
+      <option value="5/11">5/11</option>
+      <option value="5/12">5/12</option>
+      <option value="5/13">5/13</option>
+      <option value="5/14">5/14</option>
+      <option value="5/15">5/15</option>
     </select>
   </div>
 
-  <!-- INPUT NỘI DUNG -->
   <div class="field">
-    <label for="userInput">Nội dung phiếu nhân ái tuần này</label>
-    <small>Con có thể viết 3 lời cảm ơn – 1 việc tốt – 1 lời yêu thương hoặc tóm tắt điều tốt.</small>
-    <textarea id="userInput" placeholder="Ví dụ: Con cảm ơn..., Con đã giúp..., Con muốn gửi lời yêu thương tới..."></textarea>
+    <label for="thanksInput">3 lời cảm ơn</label>
+    <small>Con có thể cảm ơn ba mẹ, ông bà, thầy cô, bạn bè, hàng xóm...</small>
+    <textarea id="thanksInput" placeholder="Ví dụ: Con cảm ơn mẹ vì..., con cảm ơn bạn vì..., con cảm ơn cô vì..."></textarea>
   </div>
 
-  <!-- KHUNG CHAT -->
+  <div class="field">
+    <label for="deedInput">1 việc tốt con đã làm</label>
+    <small>Việc nhỏ cũng được: giúp đỡ, chia sẻ, nhường nhịn, dọn dẹp, an ủi bạn...</small>
+    <textarea id="deedInput" placeholder="Ví dụ: Con đã giúp bạn..., con đã nhường..., con đã làm..."></textarea>
+  </div>
+
+  <div class="field">
+    <label for="loveInput">1 lời yêu thương</label>
+    <small>Con có thể gửi lời yêu thương tới người mà con trân trọng nhất tuần này.</small>
+    <textarea id="loveInput" placeholder="Ví dụ: Con muốn gửi lời yêu thương tới... vì..."></textarea>
+  </div>
+
   <div class="chat" id="chatBox">
     <div class="msg bot">
       <div class="bubble">
         <strong>Thỏ Nhân Ái:</strong><br>
-        Chào con! Sau khi con viết xong, bấm “Gửi cho Thỏ”, thỏ sẽ đọc và gửi lại cho con lời khen hoặc động viên. 🌟
+        Chào con! Con hãy viết đủ 3 phần ở trên rồi bấm “Gửi cho Thỏ”. Cô sẽ giúp con nhận ra điểm mạnh và nhắc con hoàn thiện phiếu Nhân Ái nhé. 🌟
       </div>
     </div>
   </div>
 
   <div class="hint">
-    Gợi ý: cảm ơn, giúp đỡ, xin lỗi, thương, yêu, chia sẻ, an ủi...
+    Gợi ý từ khóa: cảm ơn, giúp đỡ, chia sẻ, xin lỗi, thương, yêu, an ủi, lắng nghe...
   </div>
 
-  <!-- NÚT -->
   <div class="buttons">
     <button id="sendBtn">Gửi cho Thỏ</button>
     <a id="formBtn" class="btn secondary" href="#" target="_blank" style="display:none;">
       Gửi phiếu cho cô (Google Form)
     </a>
   </div>
-
   <div class="form-note">
-    Bấm “Gửi phiếu cho cô” sau khi Thỏ phản hồi để nộp bài.
+    Thỏ chỉ giúp con suy nghĩ và nhận xét. Khi bấm “Gửi phiếu cho cô”, Google Form sẽ mở ra, con nhớ bấm nút <strong>Gửi</strong> trong Form để cô lưu lại nhé.
   </div>
-
 </div>
 
 <script>
   const chatBox   = document.getElementById("chatBox");
   const nameInput = document.getElementById("studentName");
   const classInput = document.getElementById("className");
-  const textInput = document.getElementById("userInput");
+  const thanksInput = document.getElementById("thanksInput");
+  const deedInput = document.getElementById("deedInput");
+  const loveInput = document.getElementById("loveInput");
   const sendBtn   = document.getElementById("sendBtn");
   const formBtn   = document.getElementById("formBtn");
   const bunnyAvatar = document.getElementById("bunnyAvatar");
   const currentSpeechText = document.getElementById("currentSpeechText");
 
-  /* ⭐ LINK GOOGLE FORM CỦA CÔ HERE ⭐ */
-  const GOOGLE_FORM_BASE = "https://docs.google.com/forms/d/e/1FAIpQLScFujTGwUCGm-ACOQrUbe4DgnfLXWYAK5C5H_TgwFzoW9rn8w/viewform";
+  // ⭐ Link Google Form của cô (đã chuẩn hoá, không dùng iframe)
+  const GOOGLE_FORM_BASE =
+    "https://docs.google.com/forms/d/e/1FAIpQLScFujTGwUCGm-ACOQrUbe4DgnfLXWYAK5C5H_TgwFzoW9rn8w/viewform";
 
-  /* ======= GIỌNG NÓI THỎ ======= */
+  /* ====== GIỌNG CÔ GIÁO ẤM ÁP (Web Speech API) ====== */
   const synth = window.speechSynthesis;
-  let bunnyVoice = null;
+  let teacherVoice = null;
 
-  function pickVietnameseVoice() {
+  function pickWarmVietnameseVoice() {
     if (!synth) return null;
     const voices = synth.getVoices();
-    return (
-      voices.find(v => v.lang.toLowerCase().startsWith("vi")) ||
-      voices[0] ||
-      null
+    // ưu tiên tiếng Việt, tên có vẻ nữ
+    let viVoices = voices.filter(v => v.lang.toLowerCase().startsWith("vi"));
+    let femaleLike = viVoices.find(v =>
+      /female|nữ|nu|woman|girl/i.test(v.name)
     );
+    return femaleLike || viVoices[0] || voices[0] || null;
   }
 
-  function speakAsBunny(text) {
+  function speakAsTeacher(text) {
     if (!synth || !text) return;
 
-    if (!bunnyVoice) {
-      bunnyVoice = pickVietnameseVoice();
-      if (!bunnyVoice) synth.onvoiceschanged = () => {
-        bunnyVoice = pickVietnameseVoice();
-      };
+    if (!teacherVoice) {
+      teacherVoice = pickWarmVietnameseVoice();
+      if (!teacherVoice) {
+        synth.onvoiceschanged = () => {
+          teacherVoice = pickWarmVietnameseVoice();
+        };
+      }
     }
 
     const utter = new SpeechSynthesisUtterance(text);
-    utter.voice = bunnyVoice;
-    utter.rate = 1.05;
-    utter.pitch = 1.1;
+    if (teacherVoice) utter.voice = teacherVoice;
+    utter.rate = 0.95;  // chậm, ấm
+    utter.pitch = 0.95; // trầm vừa
 
     bunnyAvatar.classList.add("speaking");
     currentSpeechText.textContent = text;
 
     utter.onend = () => bunnyAvatar.classList.remove("speaking");
+    utter.onerror = () => bunnyAvatar.classList.remove("speaking");
 
     synth.cancel();
     synth.speak(utter);
   }
 
-  /* ======= HIỂN THỊ TIN NHẮN ======= */
-  function scrollToBottom(){ chatBox.scrollTop = chatBox.scrollHeight; }
+  /* ====== CHAT ====== */
+  function scrollToBottom() {
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 
-  function addMessage(html, who="bot"){
+  function addMessage(html, who = "bot") {
     const msg = document.createElement("div");
-    msg.className = "msg "+(who==="me" ? "me":"bot");
+    msg.className = "msg " + (who === "me" ? "me" : "bot");
     const bubble = document.createElement("div");
     bubble.className = "bubble";
     bubble.innerHTML = html;
@@ -360,80 +384,86 @@
     scrollToBottom();
   }
 
-  /* ======= THỎ PHẢN HỒI ======= */
-  function makeBotReply(name, content){
-    const t = content.toLowerCase();
-
-    const hasThank = t.includes("cảm ơn") || t.includes("cam on");
-    const hasLove  = t.includes("thương") || t.includes("thuong") || t.includes("yêu") || t.includes("yeu");
-    const hasHelp  = t.includes("giúp") || t.includes("giup") ||
-                     t.includes("chia sẻ") || t.includes("chia se") ||
-                     t.includes("nhặt") || t.includes("nhat");
-    const hasSorry = t.includes("xin lỗi") || t.includes("xin loi");
+  /* ====== TẠO PHẢN HỒI ====== */
+  function makeBotReply(name, className, thanks, deed, love) {
+    const hasThanks = thanks.trim().length > 0;
+    const hasDeed  = deed.trim().length > 0;
+    const hasLove  = love.trim().length > 0;
 
     const parts = [];
 
-    parts.push(`Chào ${name}! 🐰 Thỏ đã đọc xong phiếu Nhân Ái của con.`);
+    const labelName = name || "con";
+    const labelClass = className ? ` lớp ${className}` : "";
+    parts.push(`Chào ${labelName}${labelClass}! Cô Thỏ đã đọc xong phiếu Nhân Ái của con rồi.`);
 
-    if (hasHelp) {
-      parts.push("Con đã có hành động giúp đỡ hoặc chia sẻ với người khác. Những việc làm như vậy khiến lớp mình ấm áp hơn nhiều. 🌈");
-    }
-    if (hasThank) {
-      parts.push("Thỏ thích cách con biết nói lời cảm ơn. Một câu cảm ơn nhỏ mà mang theo rất nhiều yêu thương. 💐");
-    }
-    if (hasLove) {
-      parts.push("Trong lời con viết, thỏ cảm nhận được nhiều yêu thương và sự quan tâm. Điều đó thật tuyệt vời. 💛");
-    }
-    if (hasSorry) {
-      parts.push("Con biết nhận lỗi và nói lời xin lỗi. Điều đó cho thấy con rất dũng cảm và biết trách nhiệm. 💖");
-    }
-
-    if (!hasHelp && !hasThank && !hasLove && !hasSorry) {
-      parts.push("Tuần này con chưa ghi rõ việc tốt, lời cảm ơn hay lời yêu thương. Tuần sau con thử để ý một việc nhỏ con làm được rồi ghi lại thật cụ thể nhé. 🌱");
+    if (hasThanks && hasDeed && hasLove) {
+      // Đủ 3 mục
+      parts.push("Con đã hoàn thành đủ 3 phần: 3 lời cảm ơn, 1 việc tốt và 1 lời yêu thương. Điều đó cho thấy trái tim của con rất nhân ái và biết nghĩ cho người khác. 💛");
+      parts.push("Cô rất tự hào về con. Tuần này con xứng đáng nhận một tấm <strong>Giấy khen Thỏ Nhân Ái</strong> vì đã thực hành lòng biết ơn, làm việc tốt và lan toả yêu thương.");
+      parts.push("Con hãy tiếp tục giữ thói quen đẹp này trong những tuần tiếp theo nhé. Cô tin rằng con sẽ truyền cảm hứng cho nhiều bạn khác trong lớp. 🌟");
     } else {
-      if (!hasHelp) {
-        parts.push("Tuần tới, con thử tìm một việc tốt thật cụ thể để giúp người khác nhé. 🤝");
+      // Thiếu mục nào đó -> động viên cụ thể
+      if (!hasThanks && !hasDeed && !hasLove) {
+        parts.push("Tuần này con chưa ghi rõ lời cảm ơn, việc tốt và lời yêu thương. Không sao đâu, ai cũng có những tuần khởi động mà. 🌱");
+      } else {
+        parts.push("Con đã cố gắng viết phiếu Nhân Ái, cô rất trân trọng điều đó. Tuy nhiên, để phiếu trọn vẹn hơn, con cần hoàn thành thêm một vài phần nữa nhé.");
       }
-      if (!hasThank) {
-        parts.push("Con cũng thử chọn một người để nói lời cảm ơn thật lòng nha. 🌟");
+
+      const missing = [];
+      if (!hasThanks) missing.push("3 lời cảm ơn");
+      if (!hasDeed)  missing.push("1 việc tốt");
+      if (!hasLove)  missing.push("1 lời yêu thương");
+
+      if (missing.length > 0) {
+        const missingText = missing.join(", ");
+        parts.push(`Phần con còn thiếu là: <strong>${missingText}</strong>. Con thử nghĩ xem trong tuần này mình đã được ai giúp đỡ, mình đã làm việc tốt gì hoặc con muốn nói lời yêu thương với ai nhé.`);
       }
-      if (!hasLove) {
-        parts.push("Nếu được, con gửi thêm một lời yêu thương đến ba mẹ, ông bà, thầy cô hoặc bạn bè. 🌷");
+
+      if (hasThanks) {
+        parts.push("Những lời cảm ơn con đã viết cho thấy con biết trân trọng những người xung quanh, đó là điều rất đáng quý. 💐");
       }
+      if (hasDeed) {
+        parts.push("Việc tốt con làm, dù nhỏ thôi, cũng đã làm người khác vui hơn. Mỗi việc tốt là một hạt giống Nhân Ái được gieo xuống. 🌈");
+      }
+      if (hasLove) {
+        parts.push("Lời yêu thương con gửi đi giúp trái tim của người nhận ấm áp hơn. Đó cũng là một món quà rất đẹp mà không tốn tiền đâu. 💖");
+      }
+
+      parts.push("Tuần sau, con thử hoàn thành đầy đủ cả 3 phần để nhận Giấy khen Thỏ Nhân Ái nhé. Cô luôn tin là con làm được. Cố lên nào! 🐰✨");
     }
 
-    parts.push("Thỏ luôn sẵn sàng lắng nghe câu chuyện Nhân Ái của con vào tuần sau. 🐰✨");
+    const replyText = parts.join(" ");
+    const replyHtml = "<strong>Thỏ Nhân Ái:</strong><br>" + replyText;
 
-    const reply = parts.join(" ");
-    addMessage("<strong>Thỏ Nhân Ái:</strong><br>" + reply, "bot");
-    speakAsBunny(reply);
+    addMessage(replyHtml, "bot");
+    speakAsTeacher(replyText);
   }
 
-  /* ======= XỬ LÝ GỬI ======= */
-  function handleSend(){
-    const rawName = nameInput.value.trim();
-    const className = classInput.value.trim();
-    const nameToShow = (rawName || "con") + (className ? ` lớp ${className}` : "");
-    const content = textInput.value.trim();
+  /* ====== XỬ LÝ NÚT GỬI ====== */
+  function handleSend() {
+    const rawName = (nameInput.value || "").trim();
+    const className = (classInput.value || "").trim();
+    const thanks = (thanksInput.value || "").trim();
+    const deed   = (deedInput.value || "").trim();
+    const love   = (loveInput.value || "").trim();
 
-    if (!content) return;
+    if (!thanks && !deed && !love) return;
 
-    addMessage(content, "me");
-    makeBotReply(nameToShow, content);
+    // hiển thị tóm tắt phiếu của học sinh bên phía "con"
+    const summary =
+      "3 lời cảm ơn:\n" + (thanks || "(chưa viết)") +
+      "\n\n1 việc tốt:\n" + (deed || "(chưa viết)") +
+      "\n\n1 lời yêu thương:\n" + (love || "(chưa viết)");
+    addMessage(summary, "me");
 
+    makeBotReply(rawName, className, thanks, deed, love);
+
+    // hiện nút mở Form để nộp bài (HS vẫn phải bấm Gửi trong Form)
     formBtn.style.display = "inline-flex";
     formBtn.href = GOOGLE_FORM_BASE;
-
-    textInput.value = "";
   }
 
   sendBtn.addEventListener("click", handleSend);
-  textInput.addEventListener("keydown", (e)=>{
-    if(e.key==="Enter" && !e.shiftKey){
-      e.preventDefault();
-      handleSend();
-    }
-  });
 </script>
 </body>
 </html>
